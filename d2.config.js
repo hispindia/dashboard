@@ -1,6 +1,7 @@
 const config = {
     type: 'app',
-    name: 'IPA RBF Dashboard',
+    name: 'ipa-rbf-dashboard',
+    title: 'IPA RBF Dashboard',
     entryPoints: {
         app: './src/App.js',
     },
