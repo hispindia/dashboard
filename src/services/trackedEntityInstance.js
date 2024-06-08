@@ -84,7 +84,7 @@ export const trackedEntityInstance = {
     }
   },
   filter: async (orgUnitId, programId, attr, value) => {
-    var url = `${process.env.REACT_APP_DHIS2_BASE_URL}/api/trackedEntityInstances.json?fields=orgUnit,trackedEntityInstance,trackedEntityType,enrollments[events[program,orgUnit,programStage,event,eventDate,dataValues[dataElement,value]]&ouMode=DESCENDANTS&ou=${orgUnitId}&program=${programId}`;
+    var url = `${process.env.REACT_APP_DHIS2_BASE_URL}/api/trackedEntityInstances.json?skipPaging=true&fields=orgUnit,trackedEntityInstance,trackedEntityType,attributes[attribute,value],enrollments[events[program,orgUnit,programStage,event,eventDate,dataValues[dataElement,value]]&ouMode=DESCENDANTS&ou=${orgUnitId}&program=${programId}`;
     if(value) url += `&filter=${attr}:eq:${value}`;
 
     let response = await fetch(url, {

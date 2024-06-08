@@ -61,6 +61,8 @@ const Selection = ({
         dataElements = dataElements.sort((a,b)=> a.name.localeCompare(b.name))
         dispatch(setSubHeads([{id:'all',name: 'ALL', dataElements}, ...dataElements]));
         dispatch(setSubHeadId('all'));
+        dispatch(setSubCategoryId(''));
+        dispatch(setSubCategories([]));
       } else {
         const category = categoriesList.find(category => category.id == categoryId);
         const head = headList.find(head => head.id == headId);

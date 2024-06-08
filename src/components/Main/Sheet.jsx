@@ -29,7 +29,7 @@ const Sheet = ({
   const [subHead, setSubHead] = useState("");
 
   const [dataElements, setDataElements] = useState([]);
-  const [totalFacilities, setTotalFacilities] = useState(0);
+  const [facilityList, setFacilityList] = useState({});
   const [displayModal, setDisplayModal] = useState(false);
   const [availability, setAvailability] = useState("");
   const [question, setQuestion] = useState("");
@@ -98,7 +98,6 @@ const Sheet = ({
         deList.forEach((data) => {
           data.attributeValues.forEach((attrVal) => {
               if(catgoriesCode[attrVal.attribute.code]) {
-
                 if(!deCodeVal[data.id]) deCodeVal[data.id]=[];
                 deCodeVal[data.id].push(attrVal.value);
               }
@@ -111,11 +110,14 @@ const Sheet = ({
           "FuCoXAHtiTN",
           category.code
         );
-        const events = [];
+
+        //Single ou single event, listing all the current events with facility and  orgunit.
+        const events = [];        
         teiList.trackedEntityInstances.forEach((tei) => {
           var currEvent = [];
           var prevDate = "";
           var orgUnitId = "";
+          const teiFacility = tei.attributes.find(attr => attr.attribute=='FuCoXAHtiTN')
           tei.enrollments.forEach((enrollment) => {
             enrollment.events.forEach((event) => {
               if (event.eventDate) {
@@ -133,46 +135,51 @@ const Sheet = ({
               }
             });
           });
-          events.push({ orgUnitId, currEvent });
+          events.push({ orgUnitId, teiFacility, currEvent });
         });
-        var deValues = {};
-        events.forEach((ev) =>
-          ev.currEvent.forEach((dv) => {
-            if (!deValues[dv.dataElement])
-              deValues[dv.dataElement] = {
-                count: 0,
-                orgUnits: {
-                  available: [],
-                  notAvailable: []
-                }
-              };
-            if (deCodeVal[dv.dataElement] && deCodeVal[dv.dataElement].includes(dv.value)) {
-              deValues[dv.dataElement]["count"]++;
-              deValues[dv.dataElement]['orgUnits']["available"].push(ev.orgUnitId);
-            } else {
-              deValues[dv.dataElement]['orgUnits']["notAvailable"].push(ev.orgUnitId);
-            }
-          })
-        );
 
+        //Getting facility group ou list and dataElement available ou and ou count with facilityCode
+        var deValues = {};
+        var facilityGroupList = {}
+        events.forEach((ev) => {
+          var eventFacility = 'notFilled'; // named notFilled to check if facility is completely filled or not
+          if(ev.teiFacility) eventFacility = ev.teiFacility.value;
+          if(!facilityGroupList[eventFacility]) facilityGroupList[eventFacility] = [];
+          facilityGroupList[eventFacility].push(ev.orgUnitId);
+
+            ev.currEvent.forEach((dv) => {
+              if (!deValues[dv.dataElement])
+                deValues[dv.dataElement] = {
+                  count: 0,
+                  facilities: {},
+                  availableOrgUnits: []
+                };
+              if (deCodeVal[dv.dataElement] && deCodeVal[dv.dataElement].includes(dv.value)) {
+                deValues[dv.dataElement]["count"]++;
+                deValues[dv.dataElement]['facilities'][eventFacility] = true;
+                deValues[dv.dataElement]['availableOrgUnits'].push(ev.orgUnitId);
+              } 
+            })
+        });
+
+        //Inserting values of the data element in the data element list
         var modifiedDataElements = deList.map((de) => {
           if (deValues[de.id]) {
-            return {
+          return {
               ...de,
               ...deValues[de.id]
               }
           }
-            return {
+          return {
               ...de,
               count: 0,
-              orgUnits: {
-                available: [],
-                notAvailable: []
-              }
-            
+              facilities: {},
+              availableOrgUnits: []
           }
         });
-        setTotalFacilities(events.length);
+
+        //We have facility group list and data elements with values inserted list
+        setFacilityList(facilityGroupList)
         setDataElements(modifiedDataElements);
       }
       setLoading(false);
@@ -299,6 +306,17 @@ const Sheet = ({
         </thead>
         <tbody>
           {dataElements.map((de, index) => {
+            var totalFacilities = 0;
+            var availableFacility = de.availableOrgUnits;
+            var unAvailableFacility = []
+            for(let facility in de.facilities) {
+              totalFacilities += facilityList[facility].length;
+              facilityList[facility].map(orgUnit => {
+                if(!de.availableOrgUnits.includes(orgUnit)) {
+                  unAvailableFacility.push(orgUnit);
+                }
+              })
+            }
             const gap = de.count
               ? totalFacilities - de.count
               : totalFacilities
@@ -337,7 +355,7 @@ const Sheet = ({
                     onClick={() => {
                       setQuestion(de.name);
                       setAvailability("Available");
-                      setOrgUnits(de.orgUnits.available);
+                      setOrgUnits(availableFacility);
                       setDisplayModal(true);
                     }}
                   >
@@ -352,7 +370,7 @@ const Sheet = ({
                     onClick={() => {
                       setQuestion(de.name);
                       setAvailability("Not available");
-                      setOrgUnits(de.orgUnits.notAvailable);
+                      setOrgUnits(unAvailableFacility);
                       setDisplayModal(true);
                     }}
                   >
