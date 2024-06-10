@@ -1,0 +1,52 @@
+/* MapLeaf.css */
+.leaflet-control-layers-base label {
+    color: black !important;
+  }
+  .leaflet-control-layers label{
+    color:black !important;
+  }
+  
+  .leaflet-control.legend {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1000;
+  }
+  
+  .maplegend {
+    max-width: 200px;
+  }
+  
+  .maplegend ul {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .maplegend .list-group-item {
+    border: none;
+    padding: 5px 0;
+    font-size: 14px;
+  }
+  
+  .maplegend .list-group-item i {
+    margin-right: 5px;
+  }
+  .legend-circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  /* Adjust the legend position for fullscreen mode */
+  
+.leaflet-container.fullscreen .maplegend {
+  position: absolute !important;
+  bottom: unset !important;
+  right: 0 !important;
+  left: unset !important;
+  top: 0 !important;
+  z-index: 9999 !important; /* Ensure the legend is above the fullscreen control */
+}
+
+

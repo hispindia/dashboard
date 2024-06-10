@@ -1,0 +1,42 @@
+{
+  "name": "timor-dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "scripts": {
+    "build": "d2-app-scripts build",
+    "start": "d2-app-scripts start",
+    "test": "d2-app-scripts test",
+    "deploy": "d2-app-scripts deploy"
+  },
+  "devDependencies": {
+    "@dhis2/cli-app-scripts": "^10.4.1"
+  },
+  "dependencies": {
+    "@dhis2/app-runtime": "^3.10.2",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@material-ui/core": "^4.12.4",
+    "@mui/material": "^5.15.11",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.17",
+    "@reduxjs/toolkit": "^2.2.1",
+    "clsx": "^2.1.0",
+    "d2": "^31.10.2",
+    "highcharts": "^11.3.0",
+    "highcharts-react-official": "^3.2.1",
+    "leaflet": "^1.9.4",
+    "leaflet-fullscreen": "^1.0.2",
+    "leaflet.markercluster": "^1.5.3",
+    "prop-types": "^15.8.1",
+    "react": "16",
+    "react-dom": "16",
+    "react-leaflet": "^4.2.1",
+    "react-redux": "^8.1.2",
+    "react-router-dom": "^6.22.1",
+    "redux": "^4.2.1",
+    "redux-logger": "^3.0.6",
+    "sass": "^1.71.0",
+    "styled-components": "^6.1.8"
+  }
+}
