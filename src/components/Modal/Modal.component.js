@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 const Modal = ({category, subCategory, head, subHead, question, orgUnits, availability, handleDisplay }) => {
 
   var date = new Date();
-  date = `${('00' + date.getDate()).slice(-2)}-${('00' +date.getMonth()).slice(-2)}-${date.getFullYear()}`;
+  date = `${('00' + date.getDate()).slice(-2)}-${('00' + (date.getMonth()+1)).slice(-2)}-${date.getFullYear()}`;
   const ouList = useSelector((state) => state.outree.ouList);
 
   return (
