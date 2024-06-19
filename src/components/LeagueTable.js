@@ -88,18 +88,18 @@ const LeagueTable = ({ name, groupId, scoreId }) => {
                     newScores.sort((a, b) =>
                       b.values[index].value.localeCompare(a.values[index].value)
                     );
-                    if (newScores[0]["values"][index]["value"])
-                      newScores[0]["values"][index]["position"] = (
-                        <><Flower /><Flower /><Flower /></>
-                      );
-                    if (newScores[1]["values"][index]["value"])
-                      newScores[1]["values"][index]["position"] = (
-                        <><Flower /><Flower /></>
-                      );
-                    if (newScores[2]["values"][index]["value"])
-                      newScores[2]["values"][index]["position"] = (
-                        <><Flower /></>
-                      );
+                    // if (newScores[0]["values"][index]["value"])
+                    //   newScores[0]["values"][index]["position"] = (
+                    //     <><Flower /><Flower /><Flower /></>
+                    //   );
+                    // if (newScores[1]["values"][index]["value"])
+                    //   newScores[1]["values"][index]["position"] = (
+                    //     <><Flower /><Flower /></>
+                    //   );
+                    // if (newScores[2]["values"][index]["value"])
+                    //   newScores[2]["values"][index]["position"] = (
+                    //     <><Flower /></>
+                    //   );
                   }
                 });
             }
@@ -135,7 +135,7 @@ const LeagueTable = ({ name, groupId, scoreId }) => {
     <>
       <h6 class="fw-semibold">
         {name}
-        <span className="fs-6 fw-normal px-2">
+        {/* <span className="fs-6 fw-normal px-2">
         <><Flower /><Flower /><Flower /></> 1<sup>st</sup> Place
         </span>
         <span className="fs-6 fw-normal px-2">
@@ -143,7 +143,7 @@ const LeagueTable = ({ name, groupId, scoreId }) => {
         </span>
         <span className="fs-6 fw-normal px-2">
         <><Flower /></>3<sup>rd</sup> Place
-        </span>
+        </span> */}
       </h6>
       <div className="scroll">
         <table className="table table-bordered">
@@ -167,14 +167,14 @@ const LeagueTable = ({ name, groupId, scoreId }) => {
                 {row.values.map((val) => (
                   <td>
                     {val.status == "high" ? (
-                      <UpArrow color="black" />
+                      <UpArrow color="green" />
                     ) : val.status == "low" ? (
-                      <DownArrow color="black" />
+                      <DownArrow color="red" />
                     ) : (
                       ""
                     )}{" "}
                     <span>{val.value}</span>{" "}
-                    <span className="float-end">{val.position}</span>
+                    {/* <span className="float-end">{val.position}</span> */}
                   </td>
                 ))}
               </tr>

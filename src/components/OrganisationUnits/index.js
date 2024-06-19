@@ -8,6 +8,7 @@ const OrganisationUnits = () => {
   const dispatch = useDispatch();
   const userOU = useSelector((state) => state.outree.userOU);
   const clickedOU = useSelector((state) => state.outree.clickedOU);
+  const orgUnits = useSelector(state => state.outree.orgUnits);
 
   useEffect(() => {
     if (clickedOU) {
@@ -30,18 +31,18 @@ const OrganisationUnits = () => {
          >
            {userOU.name}
          </button>
-         {userOU.children.map((ou) => {
-           if (ou.id == "EYVrJAjlO4l" || ou.id == "JqSk9VNED0G") return;
-           return (
-             <button
-               type="button"
-               className={clickedOU.id==ou.id ? "btn btn-clicked mx-1":"btn btn-outline-secondary mx-1"}
-               onClick={() => handleClickedOU(ou)}
-             >
-               {ou.name}
-             </button>
-           );
-         })}
+         {
+          orgUnits.map((ou) => {
+            return (
+              <button
+                type="button"
+                className={clickedOU.id==ou.id ? "btn btn-clicked mx-1":"btn btn-outline-secondary mx-1"}
+                onClick={() => handleClickedOU(ou)}
+              >
+                {ou.name}
+              </button>
+            );
+          })}
        </div>
   
 };

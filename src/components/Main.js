@@ -6,6 +6,7 @@ import { scoresId } from "../constants/Ids.js";
 
 import NQAS from "./NQAS";
 import AssessmentScore from "./AssessmentScore";
+import CKSI from "./CKSI.js";
 
 const Main = () => {
   return (
@@ -26,12 +27,15 @@ const Main = () => {
       <div className="border p-3">
           <NQAS chartId="PHC/UPHC" scoreId={scoresId["PHC/UPHC"]} />
           <AssessmentScore chartId="PHC/UPHC" scoreId={scoresId["PHC/UPHC"]} />
+          <CKSI chartId="PHC/UPHC" scoreId={scoresId["PHC/UPHC"]} />
 
           <NQAS chartId="CHC/SDH" scoreId={scoresId["CHC/SDH"]} />
           <AssessmentScore chartId="CHC/SDH" scoreId={scoresId["CHC/SDH"]} />
+          <CKSI chartId="CHC/SDH" scoreId={scoresId["CHC/SDH"]} />
 
           <NQAS chartId="DH" scoreId={scoresId["DH"]} />
           <AssessmentScore chartId="DH" scoreId={scoresId["DH"]} />
+          <CKSI chartId="DH" scoreId={scoresId["DH"]} />
 
           <AssessmentScore chartId="DHT" scoreId={scoresId["DHT"]} />
 

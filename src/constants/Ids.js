@@ -24,9 +24,9 @@ export const ipaUnits = [
 
 
 export const scoresId = {
-  "CHC/SDH": {group: "OU_GROUP-QbaIyUsVHJ9", nqas: 'dHuVSKPUOtv', score:"Pk9nPVbH9ux", scorePercent: "YaoJOjzhm97", color: "#AC3E31"},
-  DH: {group: "OU_GROUP-qvN06qQw9Hr", nqas: 'dHuVSKPUOtv', score:"Bf5FS8GIGsl", scorePercent: "sLV21OXx8Yr", color: '#488A99'},
-  "PHC/UPHC": {group: "OU_GROUP-u52bDIwLiOG;OU_GROUP-vTZ2yIeAi81", nqas: 'dHuVSKPUOtv', score:"xGA2Lw12vQi", scorePercent: "TxBqFbp7YdF",color: '#1C4E80'},
+  "CHC/SDH": {group: "OU_GROUP-QbaIyUsVHJ9", nqas: 'dHuVSKPUOtv', pkId: 'Ew3pCQkT0h6', score:"Pk9nPVbH9ux", scorePercent: "YaoJOjzhm97", color: "#AC3E31"},
+  DH: {group: "OU_GROUP-qvN06qQw9Hr", nqas: 'dHuVSKPUOtv', pkId: 'BrYkWIAw28Z', score:"Bf5FS8GIGsl", scorePercent: "sLV21OXx8Yr", color: '#488A99'},
+  "PHC/UPHC": {group: "OU_GROUP-u52bDIwLiOG;OU_GROUP-vTZ2yIeAi81", pkId: 'roxV1Oz25wH', nqas: 'dHuVSKPUOtv', score:"xGA2Lw12vQi", scorePercent: "TxBqFbp7YdF", color: '#1C4E80'},
   DHT: {group: "OU_GROUP-D5YO4NsZtSp", score:"vEqxM04HXI6", scorePercent: "UtAsCh0j3tR", color: "#484848"},
   "SHT/INS": {group: "OU_GROUP-Y1P2f3awpzt;OU_GROUP-qsRLv1WjuiM", score:"cDGN8aQEIXp;kxZYPry1cGD", scorePercent: "FpqYwDb1ZAm;Cdn9FqbGXIx", color: "#DBAE58"},
 };

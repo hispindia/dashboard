@@ -3,6 +3,7 @@ import "./style.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setClickedOU,
+  setOrgUnits,
   setUserOU,
 } from "../../store/outree/outree.action";
 import { Period } from "./Period";
@@ -20,6 +21,10 @@ const Navbar = ({ data }) => {
         dispatch(setUserOU(data.me.organisationUnits[0]));
         dispatch(setClickedOU(data.me.organisationUnits[0]));
       }
+    }
+    if(data.orgUnitGroup)  {
+      var orgUnits = data.orgUnitGroup.organisationUnits.sort((a,b) => a.name.localeCompare(b.name))
+      dispatch(setOrgUnits(orgUnits));
     }
   }, [data]);
 

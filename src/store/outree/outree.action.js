@@ -12,3 +12,7 @@ export const setClickedOU = (ou) => ({
   type: OUTREE_ACTION_TYPES.SET_CLICKED_OU,
   payload: ou,
 });
+export const setOrgUnits = (orgUnits) => ({
+  type: OUTREE_ACTION_TYPES.SET_ORGUNITS,
+  payload: orgUnits,
+});

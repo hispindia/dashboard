@@ -6,4 +6,11 @@ export const InitialQuery = {
       fields: ["id", "organisationUnits[id,name,level,code,path,children[id,name]]"],
     },
   },
+  orgUnitGroup: {
+    resource: "organisationUnitGroups/NsvQiBH9aUB.json",
+    params: {
+      fields: ["id",'name','organisationUnits[id,name,level,children]'],
+      paging:false
+    },
+  }
 };
