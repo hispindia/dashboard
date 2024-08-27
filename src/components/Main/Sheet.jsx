@@ -309,13 +309,24 @@ const Sheet = ({
             var totalFacilities = 0;
             var availableFacility = de.availableOrgUnits;
             var unAvailableFacility = []
-            for(let facility in de.facilities) {
-              totalFacilities += facilityList[facility].length;
-              facilityList[facility].map(orgUnit => {
-                if(!de.availableOrgUnits.includes(orgUnit)) {
-                  unAvailableFacility.push(orgUnit);
-                }
-              })
+            if(!Object.keys(de.facilities).length) {
+              for(let facility in facilityList) {
+                totalFacilities += facilityList[facility].length;
+                facilityList[facility].map(orgUnit => {
+                  if(!de.availableOrgUnits.includes(orgUnit)) {
+                    unAvailableFacility.push(orgUnit);
+                  }
+                })
+              }
+            } else {
+              for(let facility in de.facilities) {
+                totalFacilities += facilityList[facility].length;
+                facilityList[facility].map(orgUnit => {
+                  if(!de.availableOrgUnits.includes(orgUnit)) {
+                    unAvailableFacility.push(orgUnit);
+                  }
+                })
+              }
             }
             const gap = de.count
               ? totalFacilities - de.count
