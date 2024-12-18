@@ -47,39 +47,72 @@ const Selection = ({
     }
   }, [clickedOU]);
 
+  // useEffect(() => {
+  //   if (categoryId && headId && dataElementGroups.length) {
+  //     if (categoryId== "all") {
+  //       const hasDe = {}
+  //       var dataElements = [];
+  //       dataElementGroups.forEach(group => group.dataElements.forEach(de => {
+  //         if(!hasDe[de.id]) {
+  //           dataElements.push(de);
+  //           hasDe[de.id] = true;
+  //         }
+  //       }))
+  //       dataElements = dataElements.sort((a,b)=> a.name.localeCompare(b.name))
+  //       dispatch(setSubHeads([{id:'all',name: 'ALL', dataElements}, ...dataElements]));
+  //       dispatch(setSubHeadId('all'));
+  //       dispatch(setSubCategoryId(''));
+  //       dispatch(setSubCategories([]));
+  //     } else {
+  //       const category = categoriesList.find(category => category.id == categoryId);
+  //       const head = headList.find(head => head.id == headId);
+  //       var dataElementGroup = dataElementGroups.find(
+  //         (deGroups) => deGroups.code == `${category.code}_${head.code}`
+  //       );
+  //       if (dataElementGroup) {
+  //         dataElementGroup['dataElements'] = dataElementGroup.dataElements.sort((a,b)=> a.name.localeCompare(b.name))
+  //         dispatch(setSubHeads([{id:'all',name: 'ALL', dataElements: dataElementGroup.dataElements},...dataElementGroup.dataElements]));
+  //         dispatch(setSubHeadId('all'));
+          
+  //       }
+  //       else dispatch(setSubHeads([]));
+        
+  //     }
+  //   }
+  // }, [categoryId, headId, dataElementGroups]);
   useEffect(() => {
     if (categoryId && headId && dataElementGroups.length) {
-      if (categoryId== "all") {
-        const hasDe = {}
-        var dataElements = [];
-        dataElementGroups.forEach(group => group.dataElements.forEach(de => {
-          if(!hasDe[de.id]) {
-            dataElements.push(de);
-            hasDe[de.id] = true;
-          }
-        }))
-        dataElements = dataElements.sort((a,b)=> a.name.localeCompare(b.name))
-        dispatch(setSubHeads([{id:'all',name: 'ALL', dataElements}, ...dataElements]));
-        dispatch(setSubHeadId('all'));
+      const head = headList.find((head) => head.id == headId);
+      if (head) {
+        const headNameParts = head.name.split(" - ");
+        const headKeyword = headNameParts.length > 1 ? headNameParts[1].split("_")[0].toLowerCase() : "";
+  
+        // Filter data element groups based on the main head keyword
+        const filteredDataElementGroups = dataElementGroups.filter((group) => {
+          return group.code.toLowerCase().includes(headKeyword);
+        });
+  
+        let dataElements = [];
+        filteredDataElementGroups.forEach((group) => {
+          dataElements = dataElements.concat(group.dataElements);
+        });
+  
+        dataElements = dataElements.sort((a, b) => a.name.localeCompare(b.name));
+        if (dataElements.length > 0) {
+          dispatch(setSubHeads([{ id: 'all', name: 'ALL', dataElements }, ...dataElements]));
+          dispatch(setSubHeadId('all'));
+        } else {
+          dispatch(setSubHeads([]));
+        }
+  
         dispatch(setSubCategoryId(''));
         dispatch(setSubCategories([]));
       } else {
-        const category = categoriesList.find(category => category.id == categoryId);
-        const head = headList.find(head => head.id == headId);
-        var dataElementGroup = dataElementGroups.find(
-          (deGroups) => deGroups.code == `${category.code}_${head.code}`
-        );
-        if (dataElementGroup) {
-          dataElementGroup['dataElements'] = dataElementGroup.dataElements.sort((a,b)=> a.name.localeCompare(b.name))
-          dispatch(setSubHeads([{id:'all',name: 'ALL', dataElements: dataElementGroup.dataElements},...dataElementGroup.dataElements]));
-          dispatch(setSubHeadId('all'));
-          
-        }
-        else dispatch(setSubHeads([]));
-        
+        dispatch(setSubHeads([]));
       }
     }
   }, [categoryId, headId, dataElementGroups]);
+  
 
  const handleCategory = (e) => {
     const { value } = e.target;
