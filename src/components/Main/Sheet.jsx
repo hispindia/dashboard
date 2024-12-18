@@ -95,14 +95,55 @@ const Sheet = ({
         }
         else catgoriesCode[`${category.code}_${head.code}_CODE`] = true;
 
+        // deList.forEach((data) => {
+        //   data.attributeValues.forEach((attrVal) => {
+        //       if(catgoriesCode[attrVal.attribute.code]) {
+        //         if(!deCodeVal[data.id]) deCodeVal[data.id]=[];
+        //         deCodeVal[data.id].push(attrVal.value);
+        //       }
+        //     });
+        // });
+
+        // deList.forEach((data) => {
+        //   data.dataElements.forEach((de) => {
+        //       if(catgoriesCode[de.code]) {
+        //         if(!deCodeVal[data.id]) deCodeVal[data.id]=[];
+        //         deCodeVal[data.id].push(data.value);
+        //       }
+        //     });
+        // });
+
         deList.forEach((data) => {
-          data.attributeValues.forEach((attrVal) => {
-              if(catgoriesCode[attrVal.attribute.code]) {
-                if(!deCodeVal[data.id]) deCodeVal[data.id]=[];
-                deCodeVal[data.id].push(attrVal.value);
+          console.log("Processing Data Element:", data);
+        
+          // Extract the keyword from head.name by taking the last part after the last space and splitting by underscore
+          const headNameParts = head.name.split(" ");
+          const headKeyword = headNameParts[headNameParts.length - 1].split("_")[0].toLowerCase(); // Extracts 'drugs' from 'Drugs_2'
+        
+          // Extract the last part of the data name after 'de_' and convert to lowercase
+          const dataNameParts = data.name.split("_de_");
+          if (dataNameParts.length > 1) {
+            const dataNameSuffix = dataNameParts[dataNameParts.length - 1].toLowerCase(); // e.g., 'raw_de_drugs_2'
+        
+            if (dataNameSuffix.includes(headKeyword)) {
+              console.log(`Match found for data.name: ${data.name} with head.name: ${head.name}`);
+        
+              if (!deCodeVal[data.id]) {
+                console.log(`Initializing entry for data ID: ${data.id}`);
+                deCodeVal[data.id] = [];
               }
-            });
+        
+              deCodeVal[data.id].push(data.name);
+              console.log(`Pushed data.name ${data.name} into deCodeVal for data ID: ${data.id}`);
+            } else {
+              console.log(`No match for data.name: ${data.name} with head.name: ${head.name}`);
+            }
+          } else {
+            console.log(`No 'de_' found in data.name: ${data.name}`);
+          }
         });
+        
+        
 
         const teiList = await ApiService.trackedEntityInstance.filter(
           clickedOU.id,
@@ -141,25 +182,34 @@ const Sheet = ({
         //Getting facility group ou list and dataElement available ou and ou count with facilityCode
         var deValues = {};
         var facilityGroupList = {}
+      
         events.forEach((ev) => {
-          var eventFacility = 'notFilled'; // named notFilled to check if facility is completely filled or not
-          if(ev.teiFacility) eventFacility = ev.teiFacility.value;
-          if(!facilityGroupList[eventFacility]) facilityGroupList[eventFacility] = [];
+          var eventFacility = 'notFilled'; // Named 'notFilled' to check if the facility is completely filled or not
+          if (ev.teiFacility) eventFacility = ev.teiFacility.value;
+          if (!facilityGroupList[eventFacility]) facilityGroupList[eventFacility] = [];
           facilityGroupList[eventFacility].push(ev.orgUnitId);
 
-            ev.currEvent.forEach((dv) => {
-              if (!deValues[dv.dataElement])
-                deValues[dv.dataElement] = {
-                  count: 0,
-                  facilities: {},
-                  availableOrgUnits: []
-                };
-              if (deCodeVal[dv.dataElement] && deCodeVal[dv.dataElement].includes(dv.value)) {
-                deValues[dv.dataElement]["count"]++;
-                deValues[dv.dataElement]['facilities'][eventFacility] = true;
-                deValues[dv.dataElement]['availableOrgUnits'].push(ev.orgUnitId);
-              } 
-            })
+          ev.currEvent.forEach((dv) => {
+            // Initialize the data element entry in deValues if not already present
+            if (!deValues[dv.dataElement]) {
+              deValues[dv.dataElement] = {
+                count: 0,
+                facilities: {},
+                availableOrgUnits: []
+              };
+            }
+
+            // Check if the data element ID exists in deCodeVal and the event data value contains any value
+            if (deCodeVal[dv.dataElement] && dv.value && dv.value.trim() !== "") {
+              deValues[dv.dataElement]["count"]++;
+              deValues[dv.dataElement]['facilities'][eventFacility] = true;
+              deValues[dv.dataElement]['availableOrgUnits'].push(ev.orgUnitId);
+              
+              console.log(`Count incremented for dataElement ID: ${dv.dataElement}, current count: ${deValues[dv.dataElement]["count"]}`);
+            } else {
+              console.log(`No match or empty value for dataElement ID: ${dv.dataElement}`);
+            }
+          });
         });
 
         //Inserting values of the data element in the data element list
