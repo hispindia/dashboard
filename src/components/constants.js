@@ -51,6 +51,7 @@ export const InitialQuery = {
     resource: "dataElementGroups.json",
     params: {
       fields: ["id,name,code,dataElements[id,name,attributeValues[attribute[code,name],value]"],
+      // fields: ["id,name,code,dataElements[id,name,code]"],
       paging: false,
     },
   },
