@@ -1,6 +1,7 @@
 export const defCategoryId = 'all'; //Facility
 export const defHeadId = 'Kj26Tqc9NS5'; //Program
 export const defSubHeadId = 'all'; // DataElements
+export const headListTiHode = ["Hn9YUipbpZO", "purL4HnFKnv"]
 
 export const InitialQuery = {
   me: {
@@ -38,12 +39,19 @@ export const InitialQuery = {
       paging: false,
     },
   },
+  // programList: {
+  //   resource: "programs.json",
+  //   params: {
+  //     fields: [
+  //       "id,name,code,trackedEntityType,programTrackedEntityAttributes[id,valueType,trackedEntityAttribute[id,name,optionSetValue,optionSet[options[name,code]]]],programStages[id,name,programStageDataElements[compulsory,dataElement[id,name,valueType,optionSetValue,optionSet[options[name,code]]]]]",
+  //     ],
+  //     paging: false,
+  //   },
+  // },
   programList: {
     resource: "programs.json",
     params: {
-      fields: [
-        "id,name,code,trackedEntityType,programTrackedEntityAttributes[id,valueType,trackedEntityAttribute[id,name,optionSetValue,optionSet[options[name,code]]]],programStages[id,name,programStageDataElements[compulsory,dataElement[id,name,valueType,optionSetValue,optionSet[options[name,code]]]]],organisationUnits",
-      ],
+      fields: ['id,name,code, programStages'],
       paging: false,
     },
   },
@@ -51,22 +59,37 @@ export const InitialQuery = {
     resource: "dataElementGroups.json",
     params: {
       fields: ["id,name,code,dataElements[id,name,attributeValues[attribute[code,name],value]"],
-      // fields: ["id,name,code,dataElements[id,name,code]"],
       paging: false,
     },
   },
+  // cateogoryOptionSets: {
+  //   resource: "optionSets/loTOOvMFvnX.json",
+  //   params: {
+  //     fields: ["name,options[id,name,code]"],
+  //     paging: false,
+  //   },
+  // },
   cateogoryOptionSets: {
-    resource: "optionSets/loTOOvMFvnX.json",
-    params: {
-      fields: ["name,options[id,name,code]"],
-      paging: false,
-    },
-  },
-  subCategoriesGroupList: {
     resource: "optionGroups.json",
     params: {
-      fields: ["id,name,code,options[id,name]"],
+      fields: ["id,name,code,options[id,name,code]"],
       paging: false,
     },
-  }
+  },
+
+  // subCategoriesGroupList: {
+  //   resource: "optionGroups.json",
+  //   params: {
+  //     fields: ["id,name,code,options[id,name]"],
+  //     paging: false,
+  //   },
+  // },
+
+  // subCategoriesGroupList: {
+  //   resource: "optionSets/hSeiKbynzoP.json",
+  //   params: {
+  //     fields: ["options[id,name]"],
+  //     paging: false,
+  //   },
+  // }
 };

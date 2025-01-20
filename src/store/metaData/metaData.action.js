@@ -20,3 +20,13 @@ export const setDataElementGroups = (deGroups) => ({
   payload: deGroups,
 });
 
+
+export const setSubGroup = (id) => ({
+  type: METADATA_ACTION_TYPES.SET_SUB_GROUP,
+  payload: id
+})
+
+export const setSubHead = (list) => ({
+  type: METADATA_ACTION_TYPES.SET_SUB_HEAD,
+  payload: list
+})

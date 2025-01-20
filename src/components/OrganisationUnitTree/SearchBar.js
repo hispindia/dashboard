@@ -16,7 +16,7 @@ const SearchBar = () => {
   const handleSearchedOU = (e) => {
     const { value } = e.target;
     const list = value
-      ? ouList.filter((ou) => ou.name.toLowerCase().includes(value.toLowerCase()))
+      ? ouList.filter((ou) => ou?.name?.toLowerCase().includes(value?.toLowerCase()))
       : [];
 
     dispatch(setSearchedOU(value));

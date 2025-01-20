@@ -4,32 +4,26 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setCategoryId,
   setStatus,
-  setSubCategories,
   setSubCategoryId,
   setSubHeadId,
-  setSubHeads,
   setHeadId,
+  setHeadGroupId,
+  fetchDashboardRecords,
+  createAction,
 } from "../../store/main/main.action";
 
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
+import { setSubCategoriesList, setSubGroup, setSubHead } from "../../store/metaData/metaData.action";
+import { MAIN_ACTION_TYPES } from "../../store/main/main.reducer";
 
-const Selection = ({
-  clickedOU,
-  block,
-  headList, 
-  categoriesList,
-  subCategoriesList,
-  dataElementGroups,
-  subHeads,
-  subCategories,
-  categoryId,
-  subCategoryId,
-  headId,
-  subHeadId
-}) => {
+const Selection = () => {
   const dispatch = useDispatch();
+  const { clickedOU, state, district, block } = useSelector((state) => state.outree);
+  const { subHeadList, headList, subGroupList, categoriesList, subCategoriesList, dataElementGroups } = useSelector((state) => state.metadata);
+  const { categoryId, subCategoryId, headId, subHeadId, status, subGroupId } = useSelector((state) => state.main);
+  const { programStageId = null } = headId
 
 
   const [modifiedCategories, setModifiedCategories] = useState([]);
@@ -47,184 +41,224 @@ const Selection = ({
     }
   }, [clickedOU]);
 
-  // useEffect(() => {
-  //   if (categoryId && headId && dataElementGroups.length) {
-  //     if (categoryId== "all") {
-  //       const hasDe = {}
-  //       var dataElements = [];
-  //       dataElementGroups.forEach(group => group.dataElements.forEach(de => {
-  //         if(!hasDe[de.id]) {
-  //           dataElements.push(de);
-  //           hasDe[de.id] = true;
-  //         }
-  //       }))
-  //       dataElements = dataElements.sort((a,b)=> a.name.localeCompare(b.name))
-  //       dispatch(setSubHeads([{id:'all',name: 'ALL', dataElements}, ...dataElements]));
-  //       dispatch(setSubHeadId('all'));
-  //       dispatch(setSubCategoryId(''));
-  //       dispatch(setSubCategories([]));
-  //     } else {
-  //       const category = categoriesList.find(category => category.id == categoryId);
-  //       const head = headList.find(head => head.id == headId);
-  //       var dataElementGroup = dataElementGroups.find(
-  //         (deGroups) => deGroups.code == `${category.code}_${head.code}`
-  //       );
-  //       if (dataElementGroup) {
-  //         dataElementGroup['dataElements'] = dataElementGroup.dataElements.sort((a,b)=> a.name.localeCompare(b.name))
-  //         dispatch(setSubHeads([{id:'all',name: 'ALL', dataElements: dataElementGroup.dataElements},...dataElementGroup.dataElements]));
-  //         dispatch(setSubHeadId('all'));
-          
-  //       }
-  //       else dispatch(setSubHeads([]));
-        
-  //     }
-  //   }
-  // }, [categoryId, headId, dataElementGroups]);
-  useEffect(() => {
-    if (categoryId && headId && dataElementGroups.length) {
-      const head = headList.find((head) => head.id == headId);
-      if (head) {
-        const headNameParts = head.name.split(" - ");
-        const headKeyword = headNameParts.length > 1 ? headNameParts[1].split("_")[0].toLowerCase() : "";
-  
-        // Filter data element groups based on the main head keyword
-        const filteredDataElementGroups = dataElementGroups.filter((group) => {
-          return group.code.toLowerCase().includes(headKeyword);
-        });
-  
-        let dataElements = [];
-        filteredDataElementGroups.forEach((group) => {
-          dataElements = dataElements.concat(group.dataElements);
-        });
-  
-        dataElements = dataElements.sort((a, b) => a.name.localeCompare(b.name));
-        if (dataElements.length > 0) {
-          dispatch(setSubHeads([{ id: 'all', name: 'ALL', dataElements }, ...dataElements]));
-          dispatch(setSubHeadId('all'));
-        } else {
-          dispatch(setSubHeads([]));
-        }
-  
-        dispatch(setSubCategoryId(''));
-        dispatch(setSubCategories([]));
-      } else {
-        dispatch(setSubHeads([]));
-      }
-    }
-  }, [categoryId, headId, dataElementGroups]);
-  
+  const handleCategory = (e) => {
+    const [value, name, code] = e.target.value.split('_')
+    dispatch(setCategoryId({ name, value, code }));
+    dispatch(setSubCategoryId({ name: 'All', value: 'all', code: null }));
 
- const handleCategory = (e) => {
-    const { value } = e.target;
-    dispatch(setCategoryId(value));
+    const category = categoriesList.find((data) => data.id == value);
 
-    const category= categoriesList.find((data) => data.id == value);
-    const subCategory = subCategoriesList.find((subCategory) => subCategory.code == category.code);
-    if (subCategory && subCategory.options.length) {
-      const options = [{id: 'all', name: 'ALL'}, ...subCategory.options]
-      dispatch(setSubCategories(options));
-      dispatch(setSubCategoryId('all'));
-    } else {
-      dispatch(setSubCategories([]));
-      dispatch(setSubCategoryId(''));
-    }
+    if (category && category?.options?.length) {
+      const options = [{ id: 'all', name: 'ALL' }, ...category.options]
+      dispatch(setSubCategoriesList(options));
+    } else dispatch(setSubCategoriesList([]));
+
   };
 
   const handleSubCategory = (e) => {
-    const { value } = e.target;
-    dispatch(setSubCategoryId(value));
+    const [value, name, code] = e.target.value.split('_')
+    dispatch(setSubCategoryId({ name, value, code }));
   };
 
   const handleHead = (e) => {
-    const { value } = e.target;
-    dispatch(setHeadId(value));
+    const [value, name, programStageId] = e.target.value.split('_')
+    dispatch(setHeadId({ name, value, programStageId }));
+    dispatch(setHeadGroupId({ name: '', value: null }));
+    dispatch(setSubHeadId({ name: '', value: null }));
+
+    if (dataElementGroups.length) {
+      const head = headList.find((head) => head.id == value);
+      if (head) {
+        const headCodePart = head.code
+
+        let dataElements = dataElementGroups.filter((group) => {
+          return group?.code?.toLowerCase()?.includes(headCodePart.toLowerCase());
+        });
+
+        dataElements = dataElements.sort((a, b) => a.name.localeCompare(b.name));
+        // dispatch(setSubGroup([{ id: 'all', name: 'ALL', dataElements }, ...dataElements]));
+        dispatch(setSubGroup([...dataElements]));
+        dispatch(setSubHead([]))
+      } else {
+        dispatch(setSubGroup([]))
+        dispatch(setSubHead([]))
+      }
+    }
   };
+
+  const handleSubGroup = (e) => {
+    const [value, name] = e.target.value.split('_')
+    dispatch(setHeadGroupId({ name, value }));
+    dispatch(setSubHeadId({ name: 'ALL', value: 'all' }));
+
+    if (subGroupList.length) {
+      for (const group of subGroupList) {
+        if (group.id == value) {
+          dispatch(setSubHead([{ id: 'all', name: 'ALL', dataElements: group.dataElements }, ...group.dataElements]))
+          return
+        }
+      }
+    }
+    else dispatch(setSubHead([]))
+  }
 
   const handleSubHead = (e) => {
-    const { value } = e.target;
-    dispatch(setSubHeadId(value));
+    const [value, name] = e.target.value.split(/_(.+)/);
+    dispatch(setSubHeadId({ name, value }));
   };
 
+  const handleFormSubmit = async () => {
+
+    if (subGroupId.value == 'all') return alert('Please select a sub group field');
+
+    dispatch(setStatus(true))
+    let subProgramIds = {};
+    let categorys = '';
+
+    if (categoryId.value != 'all') {
+      categorys = `&dimension=${programStageId}.FuCoXAHtiTN:IN:${categoryId.code}`
+      if (subCategoryId.value != 'all') categorys += `&dimension=${programStageId}.MvZuYsmwW1k:IN:${subCategoryId.code}`
+    }
+
+    if (subHeadId.value == 'all') {
+      const headEle = [...subHeadList]; // Removes the first element
+      headEle?.shift()
+
+      subProgramIds = headEle?.reduce((acc, item) => {
+        acc[item.id] = {
+          name: item.name,
+          total: 0,
+          gap: 0,
+        } // Use `item.id` as the key
+        return acc;
+      }, {});
+    } else subProgramIds[subHeadId.value] = {
+      total: 0,
+      gap: 0,
+      name: subHeadId.name
+    }
+
+    const listRes = await fetchDashboardRecords(headId.value, clickedOU.id, subProgramIds, programStageId, categorys)
+    dispatch(createAction(MAIN_ACTION_TYPES.FETCH_DASHBOARD_LIST, listRes))
+
+    dispatch(setStatus(false))
+  }
+
   return (
-    <>
+    <div className="">
       {clickedOU && clickedOU.level != 5 && clickedOU.level != 6 ? (
         <Row>
-          <Col md={3} lg={1} className="py-3">
-            Category:{" "}
-          </Col>
-          <Col md={9} lg={5} className="py-3">
+
+          <Col md={9} lg={4} className="pt-2">
+            Category
             <Form.Select
-            value={categoryId} 
-            onChange={handleCategory}
+              value={categoryId?.value + '_' + categoryId?.name + '_' + categoryId?.code}
+              onChange={handleCategory}
             >
-              {modifiedCategories.map((attr) => (
-                <option key={attr.id} value={attr.id}>
+              {modifiedCategories.map((attr, i) => (
+                <option key={attr.id} value={attr.id + "_" + attr.name + "_" + attr.code}>
                   {attr.name}
                 </option>
               ))}
             </Form.Select>
           </Col>
 
-          <Col md={3} lg={1} className="py-3">
-            Sub Category:{" "}
-          </Col>
-          <Col md={9} lg={5} className="py-3">
-            <Form.Select 
-            value={subCategoryId}
-            onChange={handleSubCategory}
+          <Col md={9} lg={4} className="pt-2">
+            Sub Category
+            <Form.Select
+              value={subCategoryId?.value + '_' + subCategoryId?.name + '_' + subCategoryId?.code}
+              onChange={handleSubCategory}
             >
-              {subCategories.map((attr) => (
-                <option key={attr.id} value={attr.id}>
-                  {attr.name}
+              {subCategoriesList.map((subAttr, i) => (
+                <option key={subAttr.id} value={subAttr.id + "_" + subAttr.name + "_" + subAttr.code}>
+                  {subAttr.name}
                 </option>
               ))}
             </Form.Select>
           </Col>
+
+          <Col md={4} lg={4} className="pt-2">
+            Main Head
+            <Form.Select
+              value={headId.value + '_' + headId.name + "_" + headId.programStageId}
+              onChange={handleHead}
+            >
+              <option value="">Select</option>
+              {headList.map((head) => (
+                <option key={head.id} value={head.id + "_" + head.name + "_" + head.programStages[0].id}>
+                  {head.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Col>
+
         </Row>
       ) : (
         ""
       )}
 
       <Row>
-        <Col md={3} lg={1} className="py-3">
-          Main Head:
-        </Col>
-        <Col md={9} lg={5} className="py-3">
-          <Form.Select 
-          value={headId}
-          onChange={handleHead}
-          >
-            {headList.map((head) => (
-              <option key={head.id} value={head.id}>
-                {head.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Col>
 
-        <Col md={3} lg={1} className="py-3">
-          Sub Head:{" "}
-        </Col>
-        <Col md={9} lg={5} className="py-3">
-          <Form.Select 
-          value={subHeadId}
-          onChange={handleSubHead}
+        <Col md={4} lg={4} className="py-2">
+          Sub Group
+          <Form.Select
+            value={subGroupId.value + '_' + subGroupId.name}
+            onChange={handleSubGroup}
           >
+            <option value="">Select</option>
             {
-              subHeads.map((de) => (
-                <option key={de.id} value={de.id}>
+              subGroupList.map((de, i) => (
+                <option key={de.id} value={de.id + "_" + de.name}>
                   {de.name}
                 </option>
               ))
             }
           </Form.Select>
         </Col>
+
+        <Col md={4} lg={4} className="py-2">
+          Sub Head
+          <Form.Select
+            value={subHeadId.value + "_" + subHeadId.name}
+            onChange={handleSubHead}
+          >
+            {
+              subHeadList?.map((de, i) => (
+                <option key={de.id} value={de.id + "_" + de.name}>
+                  {de.name}
+                </option>
+              ))
+            }
+          </Form.Select>
+        </Col>
+
+        <Col md={4} lg={4} className="pt-4 pb-2">
+          <div className="text-center">
+            <button
+              disabled={status}
+              type="button"
+              className={"btn btn-md"}
+              style={{
+                borderColor: "rgb(13, 71, 161)",
+                background: "linear-gradient(rgb(21, 101, 192) 0%, rgb(6, 80, 163) 100%) rgb(43, 97, 179)",
+                color: "rgb(255, 255, 255)",
+                fill: "rgb(255, 255, 255)",
+                fontWeight: "500",
+                width: '100%'
+              }}
+              // onClick={() => dispatch(setStatus(true))}
+              onClick={() => handleFormSubmit()}
+            >
+              {'Submit'}
+            </button>
+          </div>
+        </Col>
       </Row>
-      <div className="text-center">
+      {/* <div className="text-center">
         <button
           type="button"
           className={"btn btn-md"}
-          style={{    
+          style={{
             borderColor: "rgb(13, 71, 161)",
             background: "linear-gradient(rgb(21, 101, 192) 0%, rgb(6, 80, 163) 100%) rgb(43, 97, 179)",
             color: "rgb(255, 255, 255)",
@@ -235,8 +269,8 @@ const Selection = ({
         >
           Submit
         </button>
-      </div>
-    </>
+      </div> */}
+    </div>
   );
 };
 

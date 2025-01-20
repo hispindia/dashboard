@@ -1,7 +1,7 @@
 const config = {
     type: 'app',
-    name: 'iphs-dashboard',
-    title: 'IPHS Dashboard',
+    name: 'iphs-dashboard-dummy',
+    title: 'IPHS Dashboard Dummy',
     entryPoints: {
         app: './src/App.js',
     },

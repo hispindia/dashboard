@@ -22,7 +22,7 @@ const MyApp = () => {
     return <div className="h-100 d-flex align-items-center justify-content-center"> <CircularLoader/> </div>;
   }
   return (
-    <div className="d-flex m-2">
+    <div className="d-flex">
       <Provider store={store}>
         <SideBar data={data}/>
         <Main data={data}/>

@@ -5,17 +5,36 @@ export const MAIN_ACTION_TYPES = {
   SET_CATEGORY_ID: "SET_CATEGORY_ID",
   SET_SUB_CATEGORY_ID: "SET_SUB_CATEGORY_ID",
   SET_HEAD_ID: "SET_HEAD_ID",
+  SET_HEAD_GROUP_ID: "SET_HEAD_GROUP_ID",
   SET_SUB_HEAD_ID: "SET_SUB_HEAD_ID",
+  FETCH_DASHBOARD_LIST: "FETCH_DASHBOARD_LIST",
 };
 
 export const INITIAL_STATE = {
   subHeads: [],
   subCategories: [],
   status: false,
-  categoryId: "all",
-  subCategoryId: "",
-  headId: "Kj26Tqc9NS5",
-  subHeadId: "all",
+  categoryId: {
+    name: "All",
+    value: "all"
+  },
+  subCategoryId: {
+    name: "All",
+    value: "all"
+  },
+  headId: {
+    name: "All",
+    value: "all"
+  },
+  subHeadId: {
+    name: "All",
+    value: "all"
+  },
+  subGroupId: {
+    name: "All",
+    value: "all"
+  },
+  dashboardList: [],
 };
 
 export const mainReducer = (state = INITIAL_STATE, action) => {
@@ -31,10 +50,14 @@ export const mainReducer = (state = INITIAL_STATE, action) => {
       return { ...state, subCategoryId: payload, status: false };
     case MAIN_ACTION_TYPES.SET_HEAD_ID:
       return { ...state, headId: payload, status: false };
+    case MAIN_ACTION_TYPES.SET_HEAD_GROUP_ID:
+      return { ...state, subGroupId: payload, status: false };
     case MAIN_ACTION_TYPES.SET_SUB_HEAD_ID:
       return { ...state, subHeadId: payload, status: false };
     case MAIN_ACTION_TYPES.SET_STATUS:
       return { ...state, status: payload };
+    case MAIN_ACTION_TYPES.FETCH_DASHBOARD_LIST:
+      return { ...state, dashboardList: payload, status: false };
     default:
       return state;
   }
