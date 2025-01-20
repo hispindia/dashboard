@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import "./Modal.style.scss";
 import { useSelector } from "react-redux";
 
-const Modal = ({orgUnits = [], handleDisplay, popupData }) => {
+const Modal = ({ orgUnits = [], handleDisplay, popupData }) => {
   const { question } = popupData;
 
   const { clickedOU, state, district, block } = useSelector((state) => state.outree);
@@ -69,11 +69,29 @@ const Modal = ({orgUnits = [], handleDisplay, popupData }) => {
           >
             Close
           </button>
+          <div className="pdf/excel">
+            <button
+              type="button"
+              className="btn btn-secondary btn btn-light btn-sm"
+              data-dismiss="modal"
+              onClick={() => handleDisplay(false)}
+            >
+              {<img width="30" height="30" src="https://img.icons8.com/color/30/pdf.png" alt="pdf" />}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary btn btn-light btn-sm"
+              data-dismiss="modal"
+              onClick={() => handleDisplay(false)}
+            >
+              {<img width="30" height="30" src="https://img.icons8.com/color/30/ms-excel.png" alt="ms-excel" />}
+            </button>
+          </div>
         </div>
       </div>
-
     </div>
   );
+
 };
 
 export default React.memo(Modal);

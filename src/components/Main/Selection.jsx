@@ -251,6 +251,24 @@ const Selection = () => {
             >
               {'Submit'}
             </button>
+
+            <button
+              disabled={status}
+              type="button"
+              className={"btn btn-md"}
+              onClick={() => handleDownloadPdf()}
+            >
+            {<img width="46" height="46" src="https://img.icons8.com/color/46/pdf.png" alt="pdf"/>}
+            </button>
+            <button
+              disabled={status}
+              type="button"
+              className={"btn btn-md"}
+              onClick={() => handleDownloadExcel()}
+            >
+            {<img width="48" height="48" src="https://img.icons8.com/color/48/ms-excel.png" alt="ms-excel"/>}
+            </button>
+
           </div>
         </Col>
       </Row>
