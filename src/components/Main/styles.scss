@@ -1,0 +1,13 @@
+.scroll {
+  margin-top: 2vh;
+  max-height: 55vh;
+  overflow: auto;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 5px 10px; /* Reduced padding to make the header smaller */
+  background-color: #f8f9fa; 
+}

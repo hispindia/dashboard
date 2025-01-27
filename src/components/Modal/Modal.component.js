@@ -1,0 +1,80 @@
+import React, { memo } from "react";
+import "./Modal.style.scss";
+import { useSelector } from "react-redux";
+
+const Modal = ({orgUnits = [], handleDisplay, popupData }) => {
+  const { question } = popupData;
+
+  const { clickedOU, state, district, block } = useSelector((state) => state.outree);
+
+  const { categoryId, subCategoryId, headId, subHeadId, status, subGroupId } = useSelector((state) => state.main);
+
+  var date = new Date();
+  date = `${('00' + date.getDate()).slice(-2)}-${('00' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`;
+  const ouList = useSelector((state) => state.outree.ouList);
+
+  return (
+    <div className="modal-container">
+      <div className="modal-info border border-2 ">
+        <div className="scroll">
+          <table className="table table-font-size" >
+            <thead className="header">
+              <tr>
+                <th className={"text-center"} style={{ background: "rgb(178, 223, 219)", border: "0px" }} colSpan={4}>
+                  IPHS Line Listing <br />
+                  Report as on {date}
+                </th>
+              </tr>
+              <tr>
+                <th style={{ background: "rgb(209, 209, 209)", border: "0px" }} colSpan={2}>Category: {categoryId.name || ''}</th>
+                <th style={{ background: "rgb(209, 209, 209)", border: "0px" }} colSpan={2}>Sub-Category: {subCategoryId.name || ''}</th>
+              </tr>
+              <tr>
+                <th style={{ background: "rgb(209, 209, 209)", border: "0px" }} colSpan={2}>Head: {headId.name || ''}</th>
+                <th style={{ background: "rgb(209, 209, 209)", border: "0px" }} colSpan={2}>Head: {subGroupId.name || ''}</th>
+              </tr>
+              <tr>
+                <th style={{ background: "rgb(209, 209, 209)", border: "0px" }} colSpan={2}>Sub-Head: {subHeadId.name || ''}</th>
+                <th style={{ background: "rgb(209, 209, 209)", border: "0px" }} colSpan={4}>Question: {question}</th>
+              </tr>
+              <tr>
+                <th >S.No.</th>
+                <th >State-District-Block</th>
+                <th >Facility Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                orgUnits.map((orgUnit, index) => {
+                  const ouData = ouList.find(ou => ou.id == orgUnit);
+
+                  return <tr id={ouData.code + ouData.id}>
+                    <td>{index + 1}</td>
+                    <td>{ouData.path || ''}</td>
+                    <td>{ouData.name || ''}</td>
+                  </tr>
+
+                })
+              }
+            </tbody>
+          </table>
+
+        </div>
+        <div className="modal-foot">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            data-dismiss="modal"
+            onClick={() => handleDisplay(false)}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+
+    </div>
+  );
+};
+
+export default React.memo(Modal);
+
