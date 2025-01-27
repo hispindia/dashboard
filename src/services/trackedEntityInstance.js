@@ -1,5 +1,4 @@
 export const trackedEntityInstance = {
-  
   put: async (id, data) => {
     var url = `${process.env.REACT_APP_DHIS2_BASE_URL}/api/trackedEntityInstances/${id}`;
     let response = await fetch(url, {
