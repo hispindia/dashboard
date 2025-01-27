@@ -29,7 +29,7 @@ const Sheet = React.memo(() => {
 
   return (
     <>
-      <div class="card text-center position-static">
+      <div class="card text-center position-static" id = "printing">
         <div class="card-header">IPHS Dashboard</div>
         <div class="card-body p-0" >
           <table class="table table-bordered mb-0">
@@ -54,7 +54,7 @@ const Sheet = React.memo(() => {
               </tr>
             </tbody>
           </table>
-          <div className="">
+          <div  className="">
             <table class="table table-bordered mt-2">
               <thead>
                 <tr>
@@ -62,7 +62,7 @@ const Sheet = React.memo(() => {
                   <th scope="col">Questions</th>
                   <th scope="col">Total Facilities Assessed</th>
                   <th scope="col">Available</th>
-                  <th scope="col">Gap</th>
+                  {/* <th scope="col">Gap</th> */}
                   <th scope="col">% Gap</th>
                 </tr>
               </thead>

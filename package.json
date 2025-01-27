@@ -17,10 +17,14 @@
     "@dhis2/app-runtime": "^3.10.4",
     "bootstrap": "^5.3.1",
     "iphs-dashboard": "file:",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "react-bootstrap": "^2.10.2",
+    "react-export-table-to-excel": "^1.0.6",
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",
     "redux-logger": "^3.0.6",
-    "sass": "^1.64.1"
+    "sass": "^1.64.1",
+    "xlsx": "^0.18.5"
   }
 }
