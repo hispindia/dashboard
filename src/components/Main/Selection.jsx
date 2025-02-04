@@ -61,7 +61,6 @@ const Selection = () => {
   }, [clickedOU]);
 
 
-
   const handleCategory = (e) => {
     const [value, name, code] = e.target.value.split("_");
     dispatch(setCategoryId({ name, value, code }));

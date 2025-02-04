@@ -55,7 +55,7 @@ const Sheet = React.memo(() => {
               </tr>
             </tbody>
           </table>
-          <div className="">
+          <div  className="">
             <table class="table table-bordered mt-2">
               <thead>
                 <tr>
@@ -63,7 +63,7 @@ const Sheet = React.memo(() => {
                   <th scope="col">Questions</th>
                   <th scope="col">Total Facilities Assessed</th>
                   <th scope="col">Available</th>
-                  <th scope="col">Gap</th>
+                  {/* <th scope="col">Gap</th> */}
                   <th scope="col">% Gap</th>
                 </tr>
               </thead>

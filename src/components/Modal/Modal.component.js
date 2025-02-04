@@ -37,12 +37,14 @@ const Modal = ({ orgUnits = [], handleDisplay, popupData }) => {
     })()
   }, [])
 
+
+
   var date = new Date();
   date = `${('00' + date.getDate()).slice(-2)}-${('00' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`;
   const ouList = useSelector((state) => state.outree.ouList);
 
   return (
-    <div className="modal-container">
+    <div id = "printing1" className="modal-container">
       <div className="modal-info border border-2 ">
         <div id="printing1" className="scroll">
 
