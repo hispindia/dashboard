@@ -22,7 +22,9 @@ import {
   setSubHead,
 } from "../../store/metaData/metaData.action";
 import { MAIN_ACTION_TYPES } from "../../store/main/main.reducer";
-import { downloadPDF, exportToExcel} from "../../utils/export";
+import { downloadPDF, exportToExcel } from "../../utils/export";
+import { excelIcon, pdfIcon } from "../../imgicon";
+import { Button } from "../Button";
 
 
 const Selection = () => {
@@ -39,8 +41,8 @@ const Selection = () => {
     subCategoriesList,
     dataElementGroups,
   } = useSelector((state) => state.metadata);
-  const { categoryId, subCategoryId, headId, subHeadId, status, subGroupId } =
-    useSelector((state) => state.main);
+
+  const { categoryId, subCategoryId, headId, subHeadId, status, subGroupId } = useSelector((state) => state.main);
   const { programStageId = null } = headId;
 
   const [modifiedCategories, setModifiedCategories] = useState([]);
@@ -57,6 +59,7 @@ const Selection = () => {
       } else setModifiedCategories(categoriesList);
     }
   }, [clickedOU]);
+
 
 
   const handleCategory = (e) => {
@@ -227,7 +230,7 @@ const Selection = () => {
             </Form.Select>
           </Col>
 
-          <Col md={4} lg={4} className="pt-2">
+          <Col md={9} lg={4} className="pt-2">
             Main Head
             <Form.Select
               value={
@@ -254,7 +257,7 @@ const Selection = () => {
       )}
 
       <Row>
-        <Col md={4} lg={4} className="py-2">
+        <Col md={9} lg={4} className="py-2">
           Sub Group
           <Form.Select
             value={subGroupId.value + "_" + subGroupId.name}
@@ -269,7 +272,7 @@ const Selection = () => {
           </Form.Select>
         </Col>
 
-        <Col md={4} lg={4} className="py-2">
+        <Col md={9} lg={4} className="py-2">
           Sub Head
           <Form.Select
             value={subHeadId.value + "_" + subHeadId.name}
@@ -283,69 +286,48 @@ const Selection = () => {
           </Form.Select>
         </Col>
 
-        <Col md={4} lg={4} className="pt-4 pb-2">
-          <div className="text-center">
-            <button
-              disabled={status}
-              type="button "
-              className={"submit_button btn btn-md btn-primary mr-2"}
-              
-              // onClick={() => dispatch(setStatus(true))}
-              onClick={() => handleFormSubmit()}
-            >
-              {"Submit"}
-            </button>
+        <Col md={9} lg={4} className="pt-4 pb-2">
+          <Row className="text-center">
+            <Col md={4} lg={4}>
+              <Button
+                disabled={status}
+                onClick={() => handleFormSubmit()}
+              >
+                {"Submit"}
+              </Button>
+            </Col>
 
-            <button
-              disabled={status}
-              type="button"
-              className={"printing_button btn btn-md btn-light mr-2"}
-              onClick={() => downloadPDF("printing")}
-            >
-              {
+            <Col md={4} lg={4}>
+              <Button
+                disabled={status}
+                onClick={() => downloadPDF("printing")}
+              >
                 <img
-                  width="26"
-                  height="26"
-                  src="https://img.icons8.com/color/26/pdf.png"
+                  width="30"
+                  height="28"
+                  src={pdfIcon}
                   alt="pdf"
                 />
-              }
-            </button>
+              </Button>
+            </Col>
 
-            <button
-              disabled={status}
-              type="button"
-              className={"printing_button btn btn-md btn-light mr-2"}
-              onClick={() => exportToExcel("printing")}
-            >
-              {
+            <Col md={4} lg={4}>
+              <Button
+                disabled={status}
+                onClick={() => exportToExcel("printing")}
+              >
                 <img
-                  width="28"
+                  width="30"
                   height="28"
-                  src="https://img.icons8.com/color/28/ms-excel.png"
+                  src={excelIcon}
                   alt="ms-excel"
                 />
-              }
-            </button>
-          </div>
+              </Button>
+            </Col>
+          </Row>
         </Col>
       </Row>
-      {/* <div className="text-center">
-        <button
-          type="button"
-          className={"btn btn-md"}
-          style={{
-            borderColor: "rgb(13, 71, 161)",
-            background: "linear-gradient(rgb(21, 101, 192) 0%, rgb(6, 80, 163) 100%) rgb(43, 97, 179)",
-            color: "rgb(255, 255, 255)",
-            fill: "rgb(255, 255, 255)",
-            fontWeight: "500"
-          }}
-          onClick={() => dispatch(setStatus(true))}
-        >
-          Submit
-        </button>
-      </div> */}
+
     </div>
   );
 };

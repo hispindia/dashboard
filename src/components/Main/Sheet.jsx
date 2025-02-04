@@ -16,6 +16,7 @@ const Sheet = React.memo(() => {
   const { categoryId, subCategoryId, headId, subHeadId, status, subGroupId } = useSelector((state) => state.main);
 
 
+
   const handleDisplay = (bool) => setDisplayModal(bool);
   const { dashboardList = [] } = useSelector((state) => state.main)
 
@@ -29,7 +30,7 @@ const Sheet = React.memo(() => {
 
   return (
     <>
-      <div class="card text-center position-static" id = "printing">
+      <div class="card text-center position-static" id="printing">
         <div class="card-header">IPHS Dashboard</div>
         <div class="card-body p-0" >
           <table class="table table-bordered mb-0">
@@ -54,7 +55,7 @@ const Sheet = React.memo(() => {
               </tr>
             </tbody>
           </table>
-          <div  className="">
+          <div className="">
             <table class="table table-bordered mt-2">
               <thead>
                 <tr>
@@ -62,25 +63,27 @@ const Sheet = React.memo(() => {
                   <th scope="col">Questions</th>
                   <th scope="col">Total Facilities Assessed</th>
                   <th scope="col">Available</th>
-                  {/* <th scope="col">Gap</th> */}
+                  <th scope="col">Gap</th>
                   <th scope="col">% Gap</th>
                 </tr>
               </thead>
               <tbody>
-                {dashboardList ? dashboardList?.map((list, i) => {
-                  const avalable = parseFloat(list.total - list.gap)
-                  const checker = new ValueColorChecker({ ...COLOR_PARAMETER, gap: !falseyValues.includes(list.gap) });
-                  const percent = ((list.gap / list.total) / 100).toFixed(2)
+                {dashboardList ? Object.keys(dashboardList)?.map((list, i) => {
+                  const dList = dashboardList[list]
+                  const avalable = parseFloat(dList.total - dList.gap)
+                  const checker = new ValueColorChecker({ ...COLOR_PARAMETER, gap: !falseyValues.includes(dList.gap) });
+                  const percent = ((dList.gap / dList.total) / 100).toFixed(2)
 
-                  return <tr id={list.id}>
+                  return <tr id={list}>
                     <td><small>{i + 1}</small></td>
-                    <td style={{ textAlign: 'left' }}><small>{list.name}</small></td>
-                    <td><small>{list.total}</small></td>
+                    <td style={{ textAlign: 'left' }}><small>{dList.name}</small></td>
+                    <td><small>{dList.total}</small></td>
                     <td><button
                       type="button"
                       onClick={() => {
                         setPopupData({
-                          question: list.name,
+                          question: dList.name,
+                          subOu:list
                         })
                         setDisplayModal(true);
                       }}
@@ -89,13 +92,13 @@ const Sheet = React.memo(() => {
                     </td>
                     <td><button
                       type="button"
-                      onClick={() => {
-                        setPopupData({
-                          question: list.name,
-                        })
-                        setDisplayModal(true);
-                      }}
-                      className="btn btn-outline-warning btn-sm"><small>{list.gap}</small>
+                      // onClick={() => {
+                      //   setPopupData({
+                      //     question: list.name,
+                      //   })
+                      //   setDisplayModal(true);
+                      // }}
+                      className="btn btn-outline-warning btn-sm"><small>{dList.gap}</small>
                     </button>
                     </td>
 
@@ -107,7 +110,7 @@ const Sheet = React.memo(() => {
 
             </table>
           </div >
-          {dashboardList?.length == 0 ? <div colSpan={6} class="text-center " style={{ background: '#fff3cd' }} role="alert">
+          {Object.keys(dashboardList)?.length == 0 ? <div colSpan={6} class="text-center " style={{ background: '#fff3cd' }} role="alert">
             No records found!
           </div> : ''}
         </div>

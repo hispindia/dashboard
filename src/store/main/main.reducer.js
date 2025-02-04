@@ -34,7 +34,7 @@ export const INITIAL_STATE = {
     name: "All",
     value: "all"
   },
-  dashboardList: [],
+  dashboardList: {},
 };
 
 export const mainReducer = (state = INITIAL_STATE, action) => {

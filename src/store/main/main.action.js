@@ -54,15 +54,50 @@ export const fetchDashboardRecords = async (type, ou, subProgramIds, programId, 
 
     res.rows.forEach(row => {
       subIdKeys.forEach(id => {
-        // subProgramIds[id]['count'] = (subProgramIds[id]['count'] || 0) + Number(row[headerIndex[programId + '.' + id]])
         subProgramIds[id] = {
           ...subProgramIds[id],
-          total: (subProgramIds[id].total + 1),
-          gap: row[headerIndex[programId + '.' + id]] == '' ? (subProgramIds[id].gap + 1 ): subProgramIds[id].gap,
+          total: res.height,
+          // total: (subProgramIds[id].total + 1),
+          gap: row[headerIndex[programId + '.' + id]] == '' ? (subProgramIds[id].gap + 1) : subProgramIds[id].gap,
         }
       })
     })
-    return Object.values(subProgramIds)
+    return subProgramIds
+  } else {
+    alert(res.message)
+    return {}
+  }
+}
+
+export const fetchAvalableRecords = async (type, ou, subProgramIds, programId, filter) => {
+  const subIdKeys = [...Object.keys(subProgramIds)]
+  let updateSubIds = subIdKeys.map(id => '&dimension=' + programId + '.' + id)
+
+  let res = await dashboardServices.fetchRecords(type, ou, updateSubIds, programId, filter)
+
+  if (res.status != 'ERROR') {
+    let id = subIdKeys[0]
+    let headerIndex = {
+      [programId + '.' + id]: 1,
+      'ounamehierarchy': 1,
+
+    }
+    let collectedData = []
+
+    res.headers.forEach((head, index) => {
+      if (headerIndex[head.name]) {
+        headerIndex[head.name] = index
+      }
+    })
+    res.rows.forEach(row => {
+      if (row[headerIndex[programId + '.' + id]] != '') {
+        collectedData.push({
+          ounamehierarchy: row[headerIndex['ounamehierarchy']],
+          value: row[headerIndex[programId + '.' + id]],
+        })
+      }
+    })
+    return collectedData
   } else {
     alert(res.message)
     return []

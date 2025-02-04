@@ -1,6 +1,6 @@
 .scroll {
   margin-top: 2vh;
-  max-height: 55vh;
+  max-height: 60vh;
   overflow: auto;
 }
 
@@ -8,23 +8,25 @@
   position: sticky;
   top: 0;
   z-index: 5;
-  padding: 5px 10px; /* Reduced padding to make the header smaller */
-  background-color: #f8f9fa; 
+  padding: 5px 10px;
+  /* Reduced padding to make the header smaller */
+  background-color: #f8f9fa;
 }
 
-.submit_button{
-    //border-Color: rgb(13, 71, 161) !important;
-    // background-color:linear-gradient(rgb(21, 101, 192) 0%, rgb(6, 80, 163) 100%) rgb(43, 97, 179)!important;
-    color: rgb(255, 255, 255)!important;
-    fill: rgb(255, 255, 255)!important;
-    font-Weight: 500 !important;
-    width: 34% !important;
-    //margin:"0 10px", 
+.submit_button {
+  border-Color: rgb(255, 255, 255) !important;
+  //border-Color: rgb(13, 71, 161) !important;
+  // background-color:linear-gradient(rgb(21, 101, 192) 0%, rgb(6, 80, 163) 100%) rgb(43, 97, 179)!important;
+  color: rgb(255, 255, 255) !important;
+  fill: rgb(255, 255, 255) !important;
+  // font-Weight: 500 !important;
+  // width: 34% !important;
+  //margin:"0 10px", 
 }
 
-.printing_button{
-    //border-Color: rgb(255, 255, 255)!important;
-    //background-color:linear-gradient(rgb(208, 199, 199) 0%, rgb(188, 188, 189) 100%) rgb(255, 255, 255)!important;
-    margin: 0 10px !important;
-    width: 25% !important;
+.printing_button {
+  border-Color: rgb(255, 255, 255) !important;
+  //background-color:linear-gradient(rgb(208, 199, 199) 0%, rgb(188, 188, 189) 100%) rgb(255, 255, 255)!important;
+  // margin: 0 10px !important;
+  // width: 25% !important;
 }
