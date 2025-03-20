@@ -25,14 +25,13 @@ import { MAIN_ACTION_TYPES } from "../../store/main/main.reducer";
 import { downloadPDF, exportToExcel } from "../../utils/export";
 import { excelIcon, pdfIcon } from "../../imgicon";
 import { Button } from "../Button";
+import { CUSTOM_SERVICE_FILTER, MAIN_HEAD_FILTER } from "../../utils/constant";
 
 
 const Selection = () => {
   const dispatch = useDispatch();
 
-  const { clickedOU, state, district, block } = useSelector(
-    (state) => state.outree
-  );
+  const { clickedOU, state, district, block } = useSelector((state) => state.outree);
   const {
     subHeadList,
     headList,
@@ -45,22 +44,6 @@ const Selection = () => {
   const { categoryId, subCategoryId, headId, subHeadId, status, subGroupId } = useSelector((state) => state.main);
   const { programStageId = null } = headId;
 
-  const [modifiedCategories, setModifiedCategories] = useState([]);
-
-  useEffect(() => {
-    if (clickedOU && block) {
-      const orgUnit = block.find((ou) => ou.id == clickedOU.id);
-      if (orgUnit) {
-        setModifiedCategories(
-          categoriesList.filter(
-            (category) => category.code != "SDH" && category.code != "DH"
-          )
-        );
-      } else setModifiedCategories(categoriesList);
-    }
-  }, [clickedOU]);
-
-
   const handleCategory = (e) => {
     const [value, name, code] = e.target.value.split("_");
     dispatch(setCategoryId({ name, value, code }));
@@ -72,6 +55,41 @@ const Selection = () => {
       const options = [{ id: "all", name: "ALL" }, ...category.options];
       dispatch(setSubCategoriesList(options));
     } else dispatch(setSubCategoriesList([]));
+
+
+    const head = headList.find((head) => head.id == headId.value);
+    const headCodePart = head.code;
+
+    let dataElements = dataElementGroups.filter((group) => {
+      return group?.code
+        ?.toLowerCase()
+        ?.includes(headCodePart?.toLowerCase());
+    });
+
+    dataElements = dataElements.sort((a, b) => a?.name?.localeCompare(b?.name));
+
+
+    if (MAIN_HEAD_FILTER.includes(headId.value)) {
+      if (value == 'all') {
+        dispatch(setSubGroup([...dataElements]));
+        dispatch(setSubHeadId({}));
+        dispatch(setSubHead([]));
+      } else {
+        let filtered = []
+        if (CUSTOM_SERVICE_FILTER.includes(headId.value)) filtered = dataElements.filter((data) => data.code.split('_')[0] == code);
+        else filtered = dataElements.filter((data) => data.name.split('-').at(-1) == code);
+        dispatch(setSubGroup([...filtered]));
+        dispatch(setSubHeadId({}));
+        dispatch(setSubHead([]));
+      }
+    } else {
+      let filtered = []
+      if (CUSTOM_SERVICE_FILTER.includes(value)) dataElements.filter(item => item.code.split('_')[0] == headCodePart);
+      else filtered = dataElements.filter(item => item.name.split('_')[0].toLowerCase().includes(headCodePart.toLowerCase()));
+      dispatch(setSubGroup([...filtered]));
+      dispatch(setSubHeadId({}));
+      dispatch(setSubHead([]));
+    }
   };
 
   const handleSubCategory = (e) => {
@@ -93,15 +111,38 @@ const Selection = () => {
         let dataElements = dataElementGroups.filter((group) => {
           return group?.code
             ?.toLowerCase()
-            ?.includes(headCodePart.toLowerCase());
+            ?.includes(headCodePart?.toLowerCase());
         });
 
-        dataElements = dataElements.sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
-        // dispatch(setSubGroup([{ id: 'all', name: 'ALL', dataElements }, ...dataElements]));
-        dispatch(setSubGroup([...dataElements]));
-        dispatch(setSubHead([]));
+        dataElements = dataElements.sort((a, b) => a?.name?.localeCompare(b?.name));
+
+
+        if (categoryId?.value !== 'all') {
+          if (MAIN_HEAD_FILTER.includes(value)) {
+            const filtered = dataElements.filter((data) => data.name.split('-').at(-1) == categoryId?.code);
+            dispatch(setSubGroup([...filtered]));
+            dispatch(setSubHeadId({}));
+            dispatch(setSubHead([]));
+          } else {
+            let filtered = []
+            if (CUSTOM_SERVICE_FILTER.includes(value)) filtered = dataElements.filter(item => item.code.split('_')[0] == headCodePart);
+            else filtered = dataElements.filter(item => item.name.split('_')[0].toLowerCase().includes(headCodePart.toLowerCase()));
+
+            dispatch(setSubGroup([...filtered]));
+            dispatch(setSubHeadId({}));
+            dispatch(setSubHead([]));
+          }
+        } else {
+          let filtered = []
+          if (CUSTOM_SERVICE_FILTER.includes(value)) filtered = dataElements.filter(item => item.code.split('_')[0] == headCodePart);
+          else filtered = dataElements.filter(item => item.name.split('_')[0].toLowerCase().includes(headCodePart.toLowerCase()));
+
+          // const filtered = dataElements.filter(item => item.name.split('_')[0].toLowerCase().includes(headCodePart.toLowerCase()));
+          dispatch(setSubGroup([...filtered]));
+          dispatch(setSubHeadId({}));
+          dispatch(setSubHead([]));
+        }
+        // dispatch(setSubHead([]));
       } else {
         dispatch(setSubGroup([]));
         dispatch(setSubHead([]));
@@ -109,8 +150,10 @@ const Selection = () => {
     }
   };
 
+
+
   const handleSubGroup = (e) => {
-    const [value, name] = e.target.value.split("_");
+    const [value, name] = e.target.value.split("*");
     dispatch(setHeadGroupId({ name, value }));
     dispatch(setSubHeadId({ name: "ALL", value: "all" }));
 
@@ -127,6 +170,7 @@ const Selection = () => {
         }
       }
     } else dispatch(setSubHead([]));
+
   };
 
   const handleSubHead = (e) => {
@@ -135,20 +179,24 @@ const Selection = () => {
   };
 
   const handleFormSubmit = async () => {
-    if (subGroupId.value == "all")
-      return alert("Please select a sub group field");
+    if (subGroupId.value == "all") return alert("Please select a sub group field");
+    if (Object.keys(subHeadId).length == 0) return alert("Please select a sub head field");
 
     dispatch(setStatus(true));
     let subProgramIds = {};
     let categorys = "";
+    console.trace(categoryId);
 
+    // if (MAIN_HEAD_FILTER.includes(headId.value)) {
     if (categoryId.value != "all") {
-      categorys = `&dimension=${programStageId}.FuCoXAHtiTN:IN:${categoryId.code}`;
-      if (subCategoryId.value != "all")
-        categorys += `&dimension=${programStageId}.MvZuYsmwW1k:IN:${subCategoryId.code}`;
+      if (Object.keys(categoryId).length) {
+        categorys = `&dimension=${programStageId}.FuCoXAHtiTN:IN:${categoryId.code}`;
+        if (Object.keys(subCategoryId).length && subCategoryId.value != "all") categorys += `&dimension=${programStageId}.MvZuYsmwW1k:IN:${subCategoryId.code}`;
+      }
     }
+    // }
 
-    if (subHeadId.value == "all") {
+    if (subHeadId?.value == "all") {
       const headEle = [...subHeadList]; // Removes the first element
       headEle?.shift();
 
@@ -160,12 +208,11 @@ const Selection = () => {
         }; // Use `item.id` as the key
         return acc;
       }, {});
-    } else
-      subProgramIds[subHeadId.value] = {
-        total: 0,
-        gap: 0,
-        name: subHeadId.name,
-      };
+    } else subProgramIds[subHeadId.value] = {
+      total: 0,
+      gap: 0,
+      name: subHeadId.name,
+    };
 
     const listRes = await fetchDashboardRecords(
       headId.value,
@@ -195,7 +242,7 @@ const Selection = () => {
               }
               onChange={handleCategory}
             >
-              {modifiedCategories.map((attr, i) => (
+              {categoriesList.map((attr, i) => (
                 <option
                   key={attr.id}
                   value={attr.id + "_" + attr.name + "_" + attr.code}
@@ -259,12 +306,12 @@ const Selection = () => {
         <Col md={9} lg={4} className="py-2">
           Sub Group
           <Form.Select
-            value={subGroupId.value + "_" + subGroupId.name}
+            value={subGroupId.value + "*" + subGroupId.name}
             onChange={handleSubGroup}
           >
             <option value="">Select</option>
             {subGroupList.map((de, i) => (
-              <option key={de.id} value={de.id + "_" + de.name}>
+              <option key={de.id} value={de.id + "*" + de.name}>
                 {de.name}
               </option>
             ))}
@@ -287,7 +334,7 @@ const Selection = () => {
 
         <Col md={9} lg={4} className="pt-4 pb-2">
           <Row className="text-center">
-            <Col md={4} lg={4}>
+            <Col md={6} lg={6}>
               <Button
                 disabled={status}
                 onClick={() => handleFormSubmit()}
@@ -296,7 +343,7 @@ const Selection = () => {
               </Button>
             </Col>
 
-            <Col md={4} lg={4}>
+            {/* <Col md={4} lg={4}>
               <Button
                 disabled={status}
                 onClick={() => downloadPDF("printing")}
@@ -308,9 +355,9 @@ const Selection = () => {
                   alt="pdf"
                 />
               </Button>
-            </Col>
+            </Col> */}
 
-            <Col md={4} lg={4}>
+            <Col md={6} lg={6}>
               <Button
                 disabled={status}
                 onClick={() => exportToExcel("printing")}

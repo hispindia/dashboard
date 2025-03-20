@@ -29,7 +29,7 @@ export class ValueColorChecker {
         } else if ((value == this.thresholds.high) && !(this.gap)) {
             return COLOR_CODES.green;
         } else {
-            return "blue"; // Color for values above the high threshold
+            return "white"; // Color for values above the high threshold
         }
     }
 }

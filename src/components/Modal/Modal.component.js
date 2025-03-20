@@ -9,7 +9,7 @@ import { CircularLoader } from "@dhis2-ui/loader";
 
 
 const Modal = ({ orgUnits = [], handleDisplay, popupData }) => {
-  const { question, subOu } = popupData;
+  const { question, subOu, type } = popupData;
 
   const { clickedOU, state, district, block } = useSelector((state) => state.outree);
 
@@ -19,17 +19,25 @@ const Modal = ({ orgUnits = [], handleDisplay, popupData }) => {
   const [avalableRecords, setAvalableRecords] = useState([])
   const [loder, setLoder] = useState(false)
 
-
-
   useEffect(() => {
     (async () => {
+      let categorys = "";
+
+      if (categoryId.value != "all") {
+        if (Object.keys(categoryId).length) {
+          categorys = `&dimension=${programStageId}.FuCoXAHtiTN:IN:${categoryId.code}`;
+          if (Object.keys(subCategoryId).length && subCategoryId.value != "all") categorys += `&dimension=${programStageId}.MvZuYsmwW1k:IN:${subCategoryId.code}`;
+        }
+      }
+
       setLoder(true)
       const listRes = await fetchAvalableRecords(
         headId.value,
+        type,
         clickedOU.id,
         { [subOu]: {} },
         programStageId,
-        ''
+        categorys
       );
 
       setAvalableRecords(listRes);
@@ -41,10 +49,9 @@ const Modal = ({ orgUnits = [], handleDisplay, popupData }) => {
 
   var date = new Date();
   date = `${('00' + date.getDate()).slice(-2)}-${('00' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`;
-  const ouList = useSelector((state) => state.outree.ouList);
 
   return (
-    <div id = "printing1" className="modal-container">
+    <div className="modal-container">
       <div className="modal-info border border-2 ">
         <div id="printing1" className="scroll">
 
@@ -52,7 +59,7 @@ const Modal = ({ orgUnits = [], handleDisplay, popupData }) => {
             <thead className="header">
               <tr>
                 <th className={"text-center"} style={{ background: "rgb(178, 223, 219)", border: "0px" }} colSpan={4}>
-                  IPHS Line Listing <br />
+                  IPHS Line Listing - {type} <br />
                   Report as on {date}
                 </th>
               </tr>
@@ -85,7 +92,7 @@ const Modal = ({ orgUnits = [], handleDisplay, popupData }) => {
                   return <tr id={aval.id}>
                     <td>{index + 1}</td>
                     <td>{aval.ounamehierarchy || ''}</td>
-                    <td>{aval.ounamehierarchy.split(' / ')[aval.ounamehierarchy.split(' / ').length-1]|| ''}</td>
+                    <td>{aval.ounamehierarchy.split(' / ')[aval.ounamehierarchy.split(' / ').length - 1] || ''}</td>
                     <td>{aval.value || ''}</td>
                   </tr>
 
@@ -97,7 +104,7 @@ const Modal = ({ orgUnits = [], handleDisplay, popupData }) => {
         </div>
         <div className="modal-foot d-flex justify-content-between align-items-center mx-2 gap-2">
 
-          <Button
+          {/* <Button
             className="btn btn-secondary btn-light btn-sm mx-2"
             data-dismiss="modal"
             onClick={() => downloadPDF("printing1")}
@@ -106,7 +113,7 @@ const Modal = ({ orgUnits = [], handleDisplay, popupData }) => {
               src={pdfIcon}
               alt="pdf"
             />
-          </Button>
+          </Button> */}
           <Button
             data-dismiss="modal"
             onClick={() => exportToExcel("printing1")}

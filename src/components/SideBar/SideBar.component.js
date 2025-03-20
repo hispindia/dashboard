@@ -15,6 +15,7 @@ import {
 import { setCategoriesList, setDataElementGroups, setHeadList, setSubCategoriesList } from "../../store/metaData/metaData.action";
 import { setCategoryId, setStatus } from "../../store/main/main.action";
 import { headListTiHode } from "../constants";
+import { CATERGORY_HIDE } from "../../utils/constant";
 
 const SideBar = ({ data }) => {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ const SideBar = ({ data }) => {
         dispatch(setClickedOU(data.me.organisationUnits[0]));
       }
       // if (data.programList) dispatch(setHeadList(data.programList?.programs?.filter(head=>!headListTiHode.includes(head.id))));
-      if (data.programList) dispatch(setHeadList(data.programList?.programs?.filter(head=>!headListTiHode.includes(head.id))));
+      if (data.programList) dispatch(setHeadList(data.programList?.programs?.filter(head => !headListTiHode.includes(head.id))));
       if (data.state) dispatch(setState(data.state.organisationUnits));
       if (data.block) dispatch(setBlock(data.block.organisationUnits));
       if (data.district) dispatch(setDistrict(data.district.organisationUnits));
@@ -47,9 +48,12 @@ const SideBar = ({ data }) => {
         dispatch(setDataElementGroups(data.dataElementGroupList.dataElementGroups))
       }
       if (data.cateogoryOptionSets) {
-        const categories = data.cateogoryOptionSets.optionGroups;
+        let categories = data.cateogoryOptionSets.optionGroups;
         if (categories.length) {
           categories.unshift({ id: 'all', name: 'ALL', code: '' })
+
+          categories.filter(cat => !cat.id.includes(CATERGORY_HIDE));
+
           dispatch(setCategoriesList(categories));
         }
       }

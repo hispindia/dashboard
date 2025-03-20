@@ -69,7 +69,7 @@ export const fetchDashboardRecords = async (type, ou, subProgramIds, programId, 
   }
 }
 
-export const fetchAvalableRecords = async (type, ou, subProgramIds, programId, filter) => {
+export const fetchAvalableRecords = async (type, subType, ou, subProgramIds, programId, filter) => {
   const subIdKeys = [...Object.keys(subProgramIds)]
   let updateSubIds = subIdKeys.map(id => '&dimension=' + programId + '.' + id)
 
@@ -89,14 +89,25 @@ export const fetchAvalableRecords = async (type, ou, subProgramIds, programId, f
         headerIndex[head.name] = index
       }
     })
-    res.rows.forEach(row => {
-      if (row[headerIndex[programId + '.' + id]] != '') {
-        collectedData.push({
-          ounamehierarchy: row[headerIndex['ounamehierarchy']],
-          value: row[headerIndex[programId + '.' + id]],
-        })
-      }
-    })
+    if (subType == 'Gap') {
+      res.rows.forEach(row => {
+        if (row[headerIndex[programId + '.' + id]] === '') {
+          collectedData.push({
+            ounamehierarchy: row[headerIndex['ounamehierarchy']],
+            value: row[headerIndex[programId + '.' + id]],
+          })
+        }
+      })
+    } else {
+      res.rows.forEach(row => {
+        if (row[headerIndex[programId + '.' + id]] !== '') {
+          collectedData.push({
+            ounamehierarchy: row[headerIndex['ounamehierarchy']],
+            value: row[headerIndex[programId + '.' + id]],
+          })
+        }
+      })
+    }
     return collectedData
   } else {
     alert(res.message)

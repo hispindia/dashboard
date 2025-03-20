@@ -26,6 +26,8 @@ export const downloadPDF = (id) => {
     printWindow.print();  
     printWindow.close();
   };
+
+  
 };
 
   

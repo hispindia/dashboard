@@ -1,3 +1,5 @@
+import { EMPTY_FILED } from "../../utils/constant";
+
 export const MAIN_ACTION_TYPES = {
   SET_SUB_CATEGORIES: "SET_SUB_CATEGORIES",
   SET_SUB_HEADS: "SET_SUB_HEADS",
@@ -14,26 +16,11 @@ export const INITIAL_STATE = {
   subHeads: [],
   subCategories: [],
   status: false,
-  categoryId: {
-    name: "All",
-    value: "all"
-  },
-  subCategoryId: {
-    name: "All",
-    value: "all"
-  },
-  headId: {
-    name: "All",
-    value: "all"
-  },
-  subHeadId: {
-    name: "All",
-    value: "all"
-  },
-  subGroupId: {
-    name: "All",
-    value: "all"
-  },
+  categoryId: EMPTY_FILED,
+  subCategoryId: EMPTY_FILED,
+  headId: EMPTY_FILED,
+  subHeadId: EMPTY_FILED,
+  subGroupId: EMPTY_FILED,
   dashboardList: {},
 };
 

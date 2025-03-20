@@ -15,8 +15,6 @@ const Sheet = React.memo(() => {
   const { clickedOU, state, district, block } = useSelector((state) => state.outree);
   const { categoryId, subCategoryId, headId, subHeadId, status, subGroupId } = useSelector((state) => state.main);
 
-
-
   const handleDisplay = (bool) => setDisplayModal(bool);
   const { dashboardList = [] } = useSelector((state) => state.main)
 
@@ -55,7 +53,7 @@ const Sheet = React.memo(() => {
               </tr>
             </tbody>
           </table>
-          <div  className="">
+          <div className="">
             <table class="table table-bordered mt-2">
               <thead>
                 <tr>
@@ -63,7 +61,7 @@ const Sheet = React.memo(() => {
                   <th scope="col">Questions</th>
                   <th scope="col">Total Facilities Assessed</th>
                   <th scope="col">Available</th>
-                  {/* <th scope="col">Gap</th> */}
+                  <th scope="col">Gap</th>
                   <th scope="col">% Gap</th>
                 </tr>
               </thead>
@@ -72,18 +70,20 @@ const Sheet = React.memo(() => {
                   const dList = dashboardList[list]
                   const avalable = parseFloat(dList.total - dList.gap)
                   const checker = new ValueColorChecker({ ...COLOR_PARAMETER, gap: !falseyValues.includes(dList.gap) });
-                  const percent = ((dList.gap / dList.total) / 100).toFixed(2)
+                  const percent = ((dList.gap / dList.total) * 100).toFixed(2)
 
                   return <tr id={list}>
                     <td><small>{i + 1}</small></td>
                     <td style={{ textAlign: 'left' }}><small>{dList.name}</small></td>
                     <td><small>{dList.total}</small></td>
                     <td><button
+                      disabled={avalable ? false : true}
                       type="button"
                       onClick={() => {
                         setPopupData({
                           question: dList.name,
-                          subOu:list
+                          subOu: list,
+                          type: "Available"
                         })
                         setDisplayModal(true);
                       }}
@@ -92,17 +92,20 @@ const Sheet = React.memo(() => {
                     </td>
                     <td><button
                       type="button"
-                      // onClick={() => {
-                      //   setPopupData({
-                      //     question: list.name,
-                      //   })
-                      //   setDisplayModal(true);
-                      // }}
+                      disabled={dList.gap ? false : true}
+                      onClick={() => {
+                        setPopupData({
+                          question: dList.name,
+                          subOu: list,
+                          type: "Gap"
+                        })
+                        setDisplayModal(true);
+                      }}
                       className="btn btn-outline-warning btn-sm"><small>{dList.gap}</small>
                     </button>
                     </td>
 
-                    <td style={{ background: checker.getColor(percent) }}><small>{percent}</small></td>
+                    <td style={{ backgroundColor: checker.getColor(percent) }}><small>{!isNaN(percent) ? percent : ''}</small></td>
 
                   </tr>
                 }) : ''}
@@ -121,7 +124,6 @@ const Sheet = React.memo(() => {
       {displayModal && (
         <Modal
           popupData={popupData}
-          // orgUnits={orgUnits}
           handleDisplay={handleDisplay}
         />
       )}
